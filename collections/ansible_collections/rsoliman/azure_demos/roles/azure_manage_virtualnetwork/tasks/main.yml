@@ -1,8 +1,8 @@
 ---
 # tasks file for azure-create-virtualnetwork
-- name: make sure virtual network {{ azure_virtualnetwork_name }} in resource group {{ azure_resourcegroup_name }} is {{ virtualnetwork_state }}
+- name: make sure virtual network {{ azure_virtualnetwork_name }} in resource group {{ azure_resourcegroup_name }} is {{ azure_virtualnetwork_state }}
   azure.azcollection.azure_rm_virtualnetwork:
     resource_group: "{{ azure_resourcegroup_name }}"
     name: "{{ azure_virtualnetwork_name }}"
     address_prefixes: "{{ azure_virtualnetwork_address_prefixes }}"
-    state: "{{ virtualnetwork_state }}"
+    state: "{{ azure_virtualnetwork_state }}"
