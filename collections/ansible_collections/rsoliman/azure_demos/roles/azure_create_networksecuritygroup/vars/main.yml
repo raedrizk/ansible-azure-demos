@@ -1,4 +1,0 @@
----
-# vars file for azure-create-networksecuritygroup
-azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
-azure_securitygroup_name: "{{ azure_securitygroup_name_choice | default('Ansible-Demo-SecurityGroup-SSH-AND-WinRM') }}"

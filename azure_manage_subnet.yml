@@ -1,0 +1,6 @@
+---
+- name: Manage a subnet in Azure
+  hosts: all
+  gather_facts: no
+  roles:
+  - rsoliman.azure_demos.azure_manage_subnet

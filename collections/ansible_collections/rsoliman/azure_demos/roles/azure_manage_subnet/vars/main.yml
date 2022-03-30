@@ -4,3 +4,4 @@ azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible
 azure_virtualnetwork_name: "{{ azure_virtualnetwork_name_choice | default('Ansible-Demo-VirtualNetwork') }}"
 azure_subnet_name: "{{ azure_subnet_name_choice | default('Ansible-Demo-Subnet') }}"
 azure_subnet_address_prefix: "{{ azure_subnet_address_prefix_choice | default('10.0.1.0/24') }}"
+azure_subnet_state: "{{ azure_subnet_state_choice | default('present') }}"

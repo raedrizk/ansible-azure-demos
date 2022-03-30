@@ -1,5 +1,0 @@
----
-- name: create a network security group in Azure
-  hosts: all
-  roles:
-  - rsoliman.azure_demos.azure-create-networksecuritygroup

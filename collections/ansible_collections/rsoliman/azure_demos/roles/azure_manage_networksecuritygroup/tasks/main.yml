@@ -1,9 +1,10 @@
 ---
 # tasks file for azure-create-networksecuritygroup
-- name: Create Network Security Group {{ azure_securitygroup_name }} that allows SSH and WinRM over HTTPS in {{ azure_resourcegroup_name }}, and additional ports
+- name: manage Network Security Group {{ azure_securitygroup_name }} that allows SSH and WinRM over HTTPS in {{ azure_resourcegroup_name }}, and additional ports
   azure_rm_securitygroup:
     resource_group: "{{ azure_resourcegroup_name }}"
     name: "{{ azure_securitygroup_name }}"
+    state: "{{ azure_securitygroup_state }}"
     rules:
       - name: SSH
         protocol: Tcp
@@ -61,8 +62,8 @@
     rules:
       - name: custom_port
         protocol: Tcp
-        destination_port_range: "{{ custom_port }}"
+        destination_port_range: "{{ azure_securitygroup_custom_port }}"
         access: Allow
         priority: 108
         direction: Inbound
-  when: custom_port is defined
+  when: azure_securitygroup_custom_port is defined and azure_securitygroup_state == 'present'
