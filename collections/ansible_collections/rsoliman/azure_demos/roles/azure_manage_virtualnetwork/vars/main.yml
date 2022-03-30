@@ -1,0 +1,6 @@
+---
+# vars file for azure-create-virtualnetwork
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+azure_virtualnetwork_name: "{{ azure_virtualnetwork_name_choice | default('Ansible-Demo-VirtualNetwork') }}"
+azure_virtualnetwork_address_prefixes: "{{ azure_virtualnetwork_address_prefixes_choice | default('10.0.0.0/16') }}"
+azure_virtualnetwork_state: "{{ azure_virtualnetwork_state_choice | default('present') }}"

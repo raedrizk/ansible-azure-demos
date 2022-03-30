@@ -1,0 +1,177 @@
+---
+- name: Provision all Required Azure resources
+  hosts: localhost
+  vars:
+    # RESOURCE GROUP
+    azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+    azure_resourcegroup_location: "{{ azure_resourcegroup_location_choice | default('eastus') }}"
+    # VIRTUAL NETWORK
+    azure_virtualnetwork_name: "{{ azure_virtualnetwork_name_choice | default('Ansible-Demo-VirtualNetwork') }}"
+    azure_virtualnetwork_address_prefixes: "{{ azure_virtualnetwork_address_prefixes_choice | default('10.0.0.0/16') }}"
+    # SUBNET
+    azure_subnet_name: "{{ azure_subnet_name_choice | default('Ansible-Demo-Subnet') }}"
+    azure_subnet_address_prefix: "{{ azure_subnet_address_prefix_choice | default('10.0.1.0/24') }}"
+    # NETWORK SECURITY GROUP
+    azure_securitygroup_name: "{{ azure_securitygroup_name_choice | default('Ansible-Demo-SecurityGroup-SSH-AND-WinRM') }}"
+    # PUBLIC IP
+    azure_publicip_name: "{{ azure_publicip_name_choice | default('Ansible-Demo-PublicIP') }}"
+    # Network interface
+    azure_networkinterface_name: "{{ azure_networkinterface_name_choice | default('Ansible-Demo-vNIC') }}"
+    # VIRTUAL MACHINE
+    azure_virtualmachine_name: "{{ azure_virtualmachine_name_choice | default('Ansible-Demo-VM') }}"
+    azure_virtualmachine_ostype: "{{ azure_virtualmachine_ostype_choice | default('Linux') }}"
+    azure_virtualmachine_count: "{{ virtualmachine_count_choice | default(1) }}"
+    azure_virtualmachine_size: "{{ azure_virtualmachine_size_choice | default('Standard_B1s') }}"
+    azure_virtualmachine_username: "{{ azure_admin_user | default('ansibleadmin') }}"
+    azure_virtualmachine_password: "{{ ansible_ssh_pass | default('SuperS@fe1234') }}"
+    azure_virtualmachine_image_offer: "{{ azure_virtualmachine_image_offer_choice | default('CentOS') }}"
+    azure_virtualmachine_image_publisher: "{{ azure_virtualmachine_image_publisher_choice | default('OpenLogic') }}"
+    azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | default('7.5') }}"
+    azure_virtualmachine_image_version: "{{ azure_virtualmachine_image_version_choice | default('latest') }}"
+    azure_virtualmachine_sg_ports:
+    - 22
+    - "{{ custom_port if (custom_port is defined and custom_port != '') else '80' }}"
+
+
+  tasks:
+  # CREATE RESOURCE GROUP
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_resourcegroup_module.html
+  - name: Create an Azure resource group with the name {{ azure_resourcegroup_name }} in {{ azure_resourcegroup_location }}
+    azure_rm_resourcegroup:
+      name: "{{ azure_resourcegroup_name }}"
+      location: "{{ azure_resourcegroup_location }}"
+  
+  # CREATE VIRTUAL NETWORK
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_virtualnetwork_module.html
+  - name: Create virtual network {{ azure_virtualnetwork_name }} in resource group {{ azure_resourcegroup_name }}
+    azure_rm_virtualnetwork:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ azure_virtualnetwork_name }}"
+      address_prefixes: "{{ azure_virtualnetwork_address_prefixes }}"
+  
+  # CREATE SUBNET
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_subnet_module.html
+  - name: Add subnet {{ azure_subnet_name }} to virtual network {{ azure_virtualnetwork_name }}
+    azure_rm_subnet:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ azure_subnet_name }}"
+      address_prefix: "{{ azure_subnet_address_prefix }}"
+      virtual_network: "{{ azure_virtualnetwork_name }}"
+
+  # CREATE NETWORK SECURITY GROUP
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_securitygroup_module.html
+  - name: Create Network Security Group {{ azure_securitygroup_name }} that allows SSH and WinRM over HTTPS in {{ azure_resourcegroup_name }}, and additional ports
+    azure_rm_securitygroup:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ azure_securitygroup_name }}"
+      rules:
+      - name: SSH
+        protocol: Tcp
+        destination_port_range: 22
+        access: Allow
+        priority: 101
+        direction: Inbound
+      
+      - name: WinRM_HTTPS
+        protocol: Tcp
+        destination_port_range: 5986
+        access: Allow
+        priority: 103
+        direction: Inbound
+
+      - name: HTTP
+        protocol: Tcp
+        destination_port_range: 80
+        access: Allow
+        priority: 104
+        direction: Inbound
+
+      - name: HTTPS
+        protocol: Tcp
+        destination_port_range: 443
+        access: Allow
+        priority: 105
+        direction: Inbound
+
+      - name: RDP
+        protocol: Tcp
+        destination_port_range: 3389
+        access: Allow
+        priority: 106
+        direction: Inbound
+
+      - name: ALTHTTP
+        protocol: Tcp
+        destination_port_range: 8080
+        access: Allow
+        priority: 107
+        direction: Inbound
+      
+  - name: Add rule for custom port to {{ azure_securitygroup_name }} 
+    azure_rm_securitygroup:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ azure_securitygroup_name }}"
+      rules:
+      - name: custom_port
+        protocol: Tcp
+        destination_port_range: "{{ custom_port }}"
+        access: Allow
+        priority: 108
+        direction: Inbound
+    when: custom_port is defined
+  
+  # CREATE PUBLIC IP
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_publicipaddress_module.html
+  - name: Create public IP address {{ azure_publicip_name }} in resource group {{ azure_resourcegroup_name }}
+    azure_rm_publicipaddress:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ azure_publicip_name }}"
+      allocation_method: Static
+    register: output_ip_address
+
+  - name: Dump public IP for VM which will be created
+    debug:
+      msg: "The public IP is {{ output_ip_address.state.ip_address }}."
+
+  - name: Setting stats for the public IP
+    set_stats:
+      data:
+        azure_public_ip_choice: "{{ output_ip_address.state.ip_address }}"
+      aggregate: yes
+  
+  # CREATE NETWORK INTERFACE
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_networkinterface_module.html
+  - name: Create virtual network inteface card {{ azure_networkinterface_name }} in {{ azure_virtualnetwork_name }}
+    azure_rm_networkinterface:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ azure_networkinterface_name }}"
+      virtual_network: "{{ azure_virtualnetwork_name }}"
+      subnet: "{{ azure_subnet_name }}"
+      ip_configurations:
+      - name: "{{ azure_networkinterface_name }}_ipconfig"
+        primary: true
+        public_ip_address_name: "{{ azure_publicip_name }}"
+      security_group: "{{ azure_securitygroup_name }}"
+  
+  # CREATE VIRTUAL MACHINE
+  # https://docs.ansible.com/ansible/2.9/modules/azure_rm_virtualmachine_module.html
+  - name: Create a {{ azure_virtualmachine_ostype }} VM
+    azure_rm_virtualmachine:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      #name: "{{ azure_virtualmachine_name }}-{{ azure_virtualmachine_count }}"
+      name: "{{ virtualmachine_name_choice+'-'+item|string if (virtualmachine_name_choice is defined and virtualmachine_name_choice != '') else azure_virtualmachine_name+'-'+item|string }}"
+      os_type: "{{ azure_virtualmachine_ostype }}"
+      vm_size: "{{ azure_virtualmachine_size }}"
+      admin_username: "{{ azure_virtualmachine_username }}"
+      admin_password: "{{ azure_virtualmachine_password }}"
+      ssh_password_enabled: true
+      #network_interfaces: "{{ azure_networkinterface_name }}"
+      open_ports: "{{ azure_virtualmachine_sg_ports }}"
+      image:
+        offer: "{{ azure_virtualmachine_image_offer }}"
+        publisher: "{{ azure_virtualmachine_image_publisher }}"
+        sku: "{{ azure_virtualmachine_image_sku }}"
+        version: "{{ azure_virtualmachine_image_version }}"
+    #no_log: true
+    with_sequence: count="{{ azure_virtualmachine_count }}"
+    register: created_vm

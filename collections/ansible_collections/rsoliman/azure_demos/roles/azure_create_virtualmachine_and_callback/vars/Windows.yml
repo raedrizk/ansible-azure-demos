@@ -1,0 +1,10 @@
+--- 
+azure_virtualmachine_image_offer: "{{ azure_virtualmachine_image_offer_choice | default('WindowsServer') }}"
+azure_virtualmachine_image_publisher: "{{ azure_virtualmachine_image_publisher_choice | default('MicrosoftWindowsServer') }}"
+azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | default('2016-Datacenter') }}"
+azure_virtualmachine_image_version: "{{ azure_virtualmachine_image_version_choice | default('latest') }}"
+azure_winrm_enable_script: SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAALQBDAG8AbQBtAGEAbgBkACAAKAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAE4AZQB0AC4AVwBlAGIAQwBsAGkAZQBuAHQAKQAuAEQAbwB3AG4AbABvAGEAZABTAHQAcgBpAG4AZwAoACcAaAB0AHQAcABzADoALwAvAHIAYQB3AC4AZwBpAHQAaAB1AGIAdQBzAGUAcgBjAG8AbgB0AGUAbgB0AC4AYwBvAG0ALwBhAG4AcwBpAGIAbABlAC8AYQBuAHMAaQBiAGwAZQAvAGQAZQB2AGUAbAAvAGUAeABhAG0AcABsAGUAcwAvAHMAYwByAGkAcAB0AHMALwBDAG8AbgBmAGkAZwB1AHIAZQBSAGUAbQBvAHQAaQBuAGcARgBvAHIAQQBuAHMAaQBiAGwAZQAuAHAAcwAxACcAKQApADsAIABFAG4AYQBiAGwAZQAtAFcAUwBNAGEAbgBDAHIAZQBkAFMAUwBQACAALQBSAG8AbABlACAAUwBlAHIAdgBlAHIAIAAtAEYAbwByAGMAZQA=
+azure_virtualmachine_sg_ports:
+- 5986
+- 3389
+- "{{ custom_port if (custom_port is defined and custom_port != '') else '80' }}"

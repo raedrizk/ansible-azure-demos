@@ -1,0 +1,6 @@
+---
+- name: create a subnet in Azure
+  hosts: all
+  gather_facts: no
+  roles:
+  - rsoliman.azure_demos.azure-create-subnet

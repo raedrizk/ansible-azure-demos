@@ -1,0 +1,12 @@
+---
+- name: create all necessary recources to provision a VM in Azure
+  hosts: localhost
+  roles:
+   - rsoliman.azure_demos.azure-create-resourcegroup
+   - rsoliman.azure_demos.azure-create-virtualnetwork
+   - rsoliman.azure_demos.azure-create-subnet
+   - rsoliman.azure_demos.azure-create-networksecuritygroup
+   # - rsoliman.azure_demos.azure-create-publicip
+   # - rsoliman.azure_demos.azure-create-networkinterface
+   - rsoliman.azure_demos.azure-create-virtualmachine
+  

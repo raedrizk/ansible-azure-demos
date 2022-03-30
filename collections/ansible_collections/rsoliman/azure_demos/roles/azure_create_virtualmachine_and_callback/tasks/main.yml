@@ -1,0 +1,65 @@
+---
+# tasks file for azure-create-virtualmachine
+- name: Including {{ azure_virtualmachine_ostype }} Specific Variables
+  include_vars: "{{ azure_virtualmachine_ostype }}.yml"
+
+- name: Create a {{ azure_virtualmachine_ostype }} VM
+  azure_rm_virtualmachine:
+    resource_group: "{{ azure_resourcegroup_name }}"
+    #name: "{{ azure_virtualmachine_name }}-{{ azure_virtualmachine_count }}"
+    name: "{{ virtualmachine_name_choice+'-'+item|string if (virtualmachine_name_choice is defined and virtualmachine_name_choice != '') else azure_virtualmachine_name+'-'+item|string }}"
+    os_type: "{{ azure_virtualmachine_ostype }}"
+    vm_size: "{{ azure_virtualmachine_size }}"
+    admin_username: "{{ azure_virtualmachine_username }}"
+    admin_password: "{{ azure_virtualmachine_password }}"
+    ssh_password_enabled: true
+    #network_interfaces: "{{ azure_networkinterface_name }}"
+    custom_data: "{{lookup('file', 'cloud-init.txt.j2')}}"
+    open_ports: "{{ azure_virtualmachine_sg_ports }}"
+    image:
+      offer: "{{ azure_virtualmachine_image_offer }}"
+      publisher: "{{ azure_virtualmachine_image_publisher }}"
+      sku: "{{ azure_virtualmachine_image_sku }}"
+      version: "{{ azure_virtualmachine_image_version }}"
+  #no_log: true
+  with_sequence: count="{{ azure_virtualmachine_count }}"
+  register: created_vm
+
+- debug:
+    msg: " Created VM With IP {{ created_vm.results[0].ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+
+- name: Create a VM Extension for Windows machines
+  include_tasks: windows_extension.yml
+  when: azure_virtualmachine_ostype == "Windows"
+
+- name: setting states for newly created VMS on Azure
+  block:
+  - name: Setting stats for the new VM Public IP
+    set_stats:
+      data:
+        provisioned_vm_public_ip: "{{ created_vm.results[0].ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+      aggregate: yes
+    with_sequence: count="{{ azure_virtualmachine_count }}"
+
+  - name: Setting stats for the new VM Public name
+    set_stats:
+      data:
+        provisioned_vm_name: "{{ virtualmachine_name_choice+'-'+item|string if (virtualmachine_name_choice is defined and virtualmachine_name_choice != '') else azure_virtualmachine_name+'-'+item|string }}"
+      aggregate: yes
+    with_sequence: count="{{ azure_virtualmachine_count }}"
+
+  - name: Add host to in_mem inventory
+    add_host:
+      name: "{{ created_vm.results[0].ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
+      groups: new_instances
+    with_sequence: count="{{ azure_virtualmachine_count }}"
+
+  - name: Setting stats for the Cloud Provider
+    set_stats:
+      data:
+        provisioned_vm_cloud: "Azure"
+      aggregate: yes
+  rescue:
+  - debug:
+      msg: "VM was probably already created - return object in different format"
+      #TODO: Add logic to handle the cerated VMs

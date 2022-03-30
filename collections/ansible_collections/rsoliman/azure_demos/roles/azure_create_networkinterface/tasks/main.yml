@@ -1,0 +1,13 @@
+---
+# tasks file for azure-create-networkinterface
+- name: Create virtual network inteface card {{ azure_networkinterface_name }} in {{ azure_virtualnetwork_name }}
+  azure_rm_networkinterface:
+    resource_group: "{{ azure_resourcegroup_name }}"
+    name: "{{ azure_networkinterface_name }}"
+    virtual_network: "{{ azure_virtualnetwork_name }}"
+    subnet: "{{ azure_subnet_name }}"
+    ip_configurations:
+    - name: "{{ azure_networkinterface_name }}_ipconfig"
+      primary: true
+      public_ip_address_name: "{{ azure_publicip_name }}"
+    security_group: "{{ azure_securitygroup_name }}"

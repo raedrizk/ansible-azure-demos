@@ -1,0 +1,8 @@
+---  
+azure_virtualmachine_image_offer: "{{ azure_virtualmachine_image_offer_choice | default('CentOS') }}"
+azure_virtualmachine_image_publisher: "{{ azure_virtualmachine_image_publisher_choice | default('OpenLogic') }}"
+azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | default('7.7') }}"
+azure_virtualmachine_image_version: "{{ azure_virtualmachine_image_version_choice | default('latest') }}"
+azure_virtualmachine_sg_ports:
+- 22
+- "{{ custom_port if (custom_port is defined and custom_port != '') else '80' }}"

@@ -1,0 +1,7 @@
+---
+- name: create a virtual network in Azure
+  hosts: all
+  gather_facts: no
+  roles:
+  - rsoliman.azure_demos.azure-create-virtualnetwork
+  

@@ -1,0 +1,11 @@
+---
+# vars file for azure-create-virtualmachine
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+azure_networkinterface_name: "{{ azure_networkinterface_name_choice | default('Ansible-Demo-vNIC') }}"
+azure_publicip_name: "{{ azure_publicip_name_choice | default('Ansible-Demo-PublicIP') }}"
+azure_virtualmachine_ostype: "{{ virtualmachine_ostype_choice | default('Windows') }}"
+azure_virtualmachine_name: "{{ azure_virtualmachine_name_choice | default('Ansible-Demo-VM') }}"
+azure_virtualmachine_count: "{{ virtualmachine_count_choice | default(1) }}"
+azure_virtualmachine_size: "{{ azure_virtualmachine_size_choice | default('Standard_B1s') }}"
+azure_virtualmachine_username: "{{ azure_admin_user | default('ansibleadmin') }}"
+azure_virtualmachine_password: "{{ ansible_ssh_pass | default('SuperS@fe1234') }}"

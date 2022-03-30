@@ -1,0 +1,8 @@
+---
+# tasks file for azure-delete-resourcegroup
+- name: Force delete the Azure resource group with the name {{ azure_resourcegroup_name }} and all its contents
+  azure_rm_resourcegroup:
+    name: "{{ azure_resourcegroup_name }}"
+    location: "{{ azure_resourcegroup_location }}"
+    force_delete_nonempty: yes
+    state: absent

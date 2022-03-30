@@ -1,0 +1,7 @@
+---
+- name: Force delete a resource group in Azure
+  hosts: all
+  gather_facts: no
+  roles:
+  - rsoliman.azure_demos.azure-delete-resourcegroup
+  

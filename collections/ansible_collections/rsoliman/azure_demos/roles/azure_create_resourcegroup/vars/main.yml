@@ -1,0 +1,4 @@
+---
+# vars file for azure-create-resourcegroup
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+azure_resourcegroup_location: "{{ azure_resourcegroup_location_choice | default('eastus') }}"

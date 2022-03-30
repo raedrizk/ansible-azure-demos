@@ -1,0 +1,6 @@
+---
+- name: Force delete Resource Group and its components
+  hosts: localhost
+  roles:
+  - rsoliman.azure_demos.azure-delete-resourcegroup
+  

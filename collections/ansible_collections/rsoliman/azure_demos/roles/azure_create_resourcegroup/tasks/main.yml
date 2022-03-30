@@ -1,0 +1,6 @@
+---
+# tasks file for azure-create-resourcegroup
+- name: Create an Azure resource group with the name {{ azure_resourcegroup_name }} in {{ azure_resourcegroup_location }}
+  azure_rm_resourcegroup:
+    name: "{{ azure_resourcegroup_name }}"
+    location: "{{ azure_resourcegroup_location }}"
