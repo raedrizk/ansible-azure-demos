@@ -1,6 +1,0 @@
----
-- name: create a VM in Azure
-  hosts: all
-  gather_facts: no
-  roles:
-  - rsoliman.azure_demos.azure-create-virtualmachine
