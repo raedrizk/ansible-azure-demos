@@ -10,6 +10,7 @@
     name: "{{ virtualmachine_name_choice+'-'+item|string if (virtualmachine_name_choice is defined and virtualmachine_name_choice != '') else azure_virtualmachine_name+'-'+item|string }}"
     os_type: "{{ azure_virtualmachine_ostype }}"
     vm_size: "{{ azure_virtualmachine_size }}"
+    state: "{{ azure_virtualmachine_state }}"
     admin_username: "{{ azure_virtualmachine_username }}"
     admin_password: "{{ azure_virtualmachine_password }}"
     ssh_password_enabled: true
@@ -24,12 +25,9 @@
   with_sequence: count="{{ azure_virtualmachine_count }}"
   register: created_vm
 
-- debug:
-    msg: " Created VM With IP {{ created_vm.results[0].ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
-
 - name: Create a VM Extension for Windows machines
   include_tasks: windows_extension.yml
-  when: azure_virtualmachine_ostype == "Windows"
+  when: azure_virtualmachine_ostype == "Windows" and azure_virtualmachine_state == 'present'
 
 - name: setting states for newly created VMS on Azure
   block:
@@ -58,6 +56,7 @@
       data:
         provisioned_vm_cloud: "Azure"
       aggregate: yes
+  when: azure_virtualmachine_state == 'present'
   rescue:
   - debug:
       msg: "VM was probably already created - return object in different format"

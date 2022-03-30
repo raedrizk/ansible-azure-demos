@@ -1,0 +1,5 @@
+---
+# vars file for azure-create-publicip
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+azure_publicip_name: "{{ azure_publicip_name_choice | default('Ansible-Demo-PublicIP') }}"
+azure_publicip_state: "{{ azure_publicip_state_choice | default('present') }}"

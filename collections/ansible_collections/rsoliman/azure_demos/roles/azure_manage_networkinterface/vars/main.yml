@@ -6,3 +6,4 @@ azure_securitygroup_name: "{{ azure_securitygroup_name_choice | default('Ansible
 azure_virtualnetwork_name: "{{ azure_virtualnetwork_name_choice | default('Ansible-Demo-VirtualNetwork') }}"
 azure_subnet_name: "{{ azure_subnet_name_choice | default('Ansible-Demo-Subnet') }}"
 azure_publicip_name: "{{ azure_publicip_name_choice | default('Ansible-Demo-PublicIP') }}"
+azure_networkinterface_state: "{{ azure_networkinterface_state_choice | default('present') }}"

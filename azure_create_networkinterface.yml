@@ -1,5 +1,0 @@
----
-- name: create a NIC in Azure
-  hosts: all
-  roles:
-  - rsoliman.azure_demos.azure-create-networkinterface 

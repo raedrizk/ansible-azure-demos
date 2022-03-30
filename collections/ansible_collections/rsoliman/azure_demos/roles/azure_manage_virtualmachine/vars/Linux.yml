@@ -5,4 +5,4 @@ azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | defa
 azure_virtualmachine_image_version: "{{ azure_virtualmachine_image_version_choice | default('latest') }}"
 azure_virtualmachine_sg_ports:
 - 22
-- "{{ custom_port if (custom_port is defined and custom_port != '') else '80' }}"
+- "{{ azure_securitygroup_custom_port if (azure_securitygroup_custom_port is defined and azure_securitygroup_custom_port != '') else '80' }}"

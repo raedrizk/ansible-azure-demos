@@ -7,4 +7,4 @@ azure_winrm_enable_script: SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAALQBDA
 azure_virtualmachine_sg_ports:
 - 5986
 - 3389
-- "{{ custom_port if (custom_port is defined and custom_port != '') else '80' }}"
+- "{{ azure_securitygroup_custom_port if (azure_securitygroup_custom_port is defined and azure_securitygroup_custom_port != '') else '80' }}"

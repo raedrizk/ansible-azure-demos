@@ -1,18 +1,16 @@
 ---
 # tasks file for azure-create-publicip
-- name: Create public IP address {{ azure_publicip_name }} in resource group {{ azure_resourcegroup_name }}
+- name: manage public IP address {{ azure_publicip_name }} in resource group {{ azure_resourcegroup_name }} to be {{ azure_publicip_state }}
   azure_rm_publicipaddress:
     resource_group: "{{ azure_resourcegroup_name }}"
     name: "{{ azure_publicip_name }}"
+    state: "{{ azure_publicip_state }}"
     allocation_method: Static
   register: output_ip_address
-
-- name: Dump public IP for VM which will be created
-  debug:
-    msg: "The public IP is {{ output_ip_address.state.ip_address }}."
 
 - name: Setting stats for the public IP
   set_stats:
     data:
       azure_public_ip_choice: "{{ output_ip_address.state.ip_address }}"
     aggregate: yes
+  when: azure_publicip_state == 'present'
