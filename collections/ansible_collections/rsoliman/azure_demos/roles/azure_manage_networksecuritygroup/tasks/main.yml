@@ -66,4 +66,4 @@
         access: Allow
         priority: 108
         direction: Inbound
-  when: azure_securitygroup_custom_port is defined and azure_securitygroup_state == 'present'
+  when: azure_securitygroup_custom_port is defined and azure_securitygroup_custom_port != "" and azure_securitygroup_state == 'present'
