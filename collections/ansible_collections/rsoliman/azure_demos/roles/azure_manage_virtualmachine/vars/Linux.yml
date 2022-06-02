@@ -1,7 +1,11 @@
 ---  
-azure_virtualmachine_image_offer: "{{ azure_virtualmachine_image_offer_choice | default('CentOS') }}"
-azure_virtualmachine_image_publisher: "{{ azure_virtualmachine_image_publisher_choice | default('OpenLogic') }}"
-azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | default('7.5') }}"
+# azure_virtualmachine_image_offer: "{{ azure_virtualmachine_image_offer_choice | default('CentOS') }}"
+# azure_virtualmachine_image_publisher: "{{ azure_virtualmachine_image_publisher_choice | default('OpenLogic') }}"
+# azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | default('7.5') }}"
+# azure_virtualmachine_image_version: "{{ azure_virtualmachine_image_version_choice | default('latest') }}"
+azure_virtualmachine_image_offer: "{{ azure_virtualmachine_image_offer_choice | default('RHEL') }}"
+azure_virtualmachine_image_publisher: "{{ azure_virtualmachine_image_publisher_choice | default('RedHat') }}"
+azure_virtualmachine_image_sku: "{{ azure_virtualmachine_image_sku_choice | default('8-LVM') }}"
 azure_virtualmachine_image_version: "{{ azure_virtualmachine_image_version_choice | default('latest') }}"
 azure_virtualmachine_sg_ports:
 - 22
