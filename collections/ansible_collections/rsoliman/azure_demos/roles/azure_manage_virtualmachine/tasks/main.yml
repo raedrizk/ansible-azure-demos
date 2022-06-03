@@ -31,24 +31,6 @@
 
 - name: setting states for newly created VMS on Azure
   block:
-  - name: Setting stats for the new VMs
-    ansible.builtin.set_stats:
-      data:
-        provisioned_vm_public_ip: "{{ created_vm.results[0].ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
-        provisioned_vm_name: "{{ virtualmachine_name_choice+'-'+item|string if (virtualmachine_name_choice is defined and virtualmachine_name_choice != '') else azure_virtualmachine_name+'-'+item|string }}"
-        provisioned_vm_cloud: "Azure"
-        new_vm_name: "{{ provisioned_vm_name }}"
-        new_vm_os: "{{ azure_virtualmachine_ostype }}"
-        new_vm_ip: "{{ provisioned_vm_public_ip }}"
-        new_vm_provisioner: Ansible
-        #for SNOW Workflows
-        ci_name: "{{ provisioned_vm_name }}"
-        ci_ip: "{{ provisioned_vm_public_ip }}"
-        ci_os: "{{ azure_virtualmachine_ostype }}"
-        ci_provisioner: "{{ new_vm_provisioner | default('Ansible') }}"
-        ci_manufacturer: "{{  provisioned_vm_cloud }}"
-      aggregate: yes
-    with_sequence: count="{{ azure_virtualmachine_count }}"
 
   - name: Add host to in_mem inventory
     add_host:
