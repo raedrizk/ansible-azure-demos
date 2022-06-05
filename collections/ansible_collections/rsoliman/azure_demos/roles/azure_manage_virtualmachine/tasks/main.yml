@@ -21,6 +21,9 @@
       publisher: "{{ azure_virtualmachine_image_publisher }}"
       sku: "{{ azure_virtualmachine_image_sku }}"
       version: "{{ azure_virtualmachine_image_version }}"
+    data_disks:
+    - lun: 0
+      disk_size_gb: "{{ azure_virtualmachine_disk_size }}"
   #no_log: true
   with_sequence: count="{{ azure_virtualmachine_count }}"
   register: created_vm
