@@ -10,3 +10,22 @@
     settings: '{"commandToExecute": "powershell.exe -ExecutionPolicy ByPass -EncodedCommand {{ azure_winrm_enable_script }}"}'
     auto_upgrade_minor_version: true
   with_sequence: count="{{ azure_virtualmachine_count }}"
+
+- name: set command for callback
+  ansible.builtin.set_stats:
+  data:
+    callback_command: 'Invoke-RestMethod -ContentType “application/json” -Uri {{ ansible_controller_url }}/api/v2/job_templates/{{ ansible_controller_template_id }}/callback/ -Method Post -Body ''{{ request_body | to_json}}'''
+  when: enable_provisioning_callback is defined and enable_provisioning callback
+    
+- name: create Azure vm extension to make a provisioning callback
+  azure_rm_virtualmachineextension:
+    name: winrm-extension
+    resource_group: "{{ azure_resourcegroup_name }}"
+    virtual_machine_name: "{{ virtualmachine_name_choice+'-'+item|string if (virtualmachine_name_choice is defined and virtualmachine_name_choice != '') else azure_virtualmachine_name+'-'+item|string }}"
+    publisher: Microsoft.Compute
+    virtual_machine_extension_type: CustomScriptExtension
+    type_handler_version: '1.9'
+    settings: '{"commandToExecute": "powershell.exe {{ callback_command }}"}'
+    auto_upgrade_minor_version: true
+  with_sequence: count="{{ azure_virtualmachine_count }}"
+  when: enable_provisioning_callback is defined and enable_provisioning callback
