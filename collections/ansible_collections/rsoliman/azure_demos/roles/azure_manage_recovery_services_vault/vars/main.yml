@@ -1,0 +1,7 @@
+---
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+
+azure_recovery_services_vault_name: "{{ azure_recovery_services_vault_name_choice | default('Ansible-Demo-recovery-services-vault') }}"
+azure_recovery_services_vault_location: "{{ azure_recovery_services_vault_location_choice | default('eastus') }}"
+azure_recovery_services_vault_state: "{{ azure_recovery_services_vault_state_choice | default('present') }}"
+
