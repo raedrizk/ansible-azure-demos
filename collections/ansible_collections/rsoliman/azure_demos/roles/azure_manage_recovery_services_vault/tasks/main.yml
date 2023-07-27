@@ -1,6 +1,6 @@
 ---
 - name: Manage Azure Recovery Services vault
-  azure_rm_recoveryservicesvault:
+  azure.azcollection.azure_rm_recoveryservicesvault:
     resource_group: "{{ azure_resourcegroup_name }}"
     name: "{{ azure_recovery_services_vault_name }}"
     location: "{{ azure_recovery_services_vault_location }}"
@@ -8,11 +8,11 @@
   register: recoveryservicesvault
 
 - name: debug
-  debug:
+  ansible.builtin.debug:
     var: recoveryservicesvault
 
 - name: Setting stats for the vault
-  set_stats:
+  ansible.builtin.set_stats:
     data:
       recoveryservicesvault: "{{ recoveryservicesvault }}"
       azure_recovery_services_vault_name: "{{ azure_recovery_services_vault_name }}"

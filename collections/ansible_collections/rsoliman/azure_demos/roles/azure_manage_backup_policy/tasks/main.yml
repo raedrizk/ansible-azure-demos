@@ -1,6 +1,6 @@
 ---
 - name: Create a Daily VM backup policy
-  azure_rm_backuppolicy:
+  azure.azcollection.azure_rm_backuppolicy:
     vault_name: "{{ azure_recovery_services_vault_name }}"
     name: "{{ azure_backup_policy_name }}"
     resource_group: "{{ azure_resourcegroup_name }}"
@@ -14,11 +14,11 @@
   register: backuppolicy
 
 - name: debug
-  debug:
+  ansible.builtin.debug:
     var: backuppolicy
 
 - name: Setting stats for the policy
-  set_stats:
+  ansible.builtin.set_stats:
     data:
       backuppolicy: "{{ backuppolicy }}"
       azure_backup_policy_name: "{{ azure_backup_policy_name }}"
