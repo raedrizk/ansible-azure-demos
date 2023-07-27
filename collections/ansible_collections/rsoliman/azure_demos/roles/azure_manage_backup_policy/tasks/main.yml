@@ -9,7 +9,7 @@
     schedule_run_frequency: "Daily"
     instant_recovery_snapshot_retention: 1
     daily_retention_count: 7
-    time_zone: "Easterm Standard Time"
+    time_zone: "UTC"
     schedule_run_time: "{{ azure_backup_policy_run_hour }}"
   register: backuppolicy
 
