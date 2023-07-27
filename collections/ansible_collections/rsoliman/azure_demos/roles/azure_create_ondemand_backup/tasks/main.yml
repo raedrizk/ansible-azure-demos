@@ -1,18 +1,20 @@
 ---
-- name: block
-  block:
-  - name: Get VM Facts
-    azure.azcollection.azure_rm_virtualmachine_info:
-      resource_group: "{{ azure_resourcegroup_name }}"
-      name: "{{ inventory_hostname }}"
-    register: vm_facts
-
-  - name: debug
-    ansible.builtin.debug:
-      var: vm_facts
+- name: Get VM Facts
+  azure.azcollection.azure_rm_virtualmachine_info:
+    resource_group: "{{ azure_resourcegroup_name }}"
+    name: "{{ inventory_hostname }}"
+  register: vm_facts
   delegate_to: localhost
   vars:
     ansible_connection: local
+
+- name: debug
+  ansible.builtin.debug:
+    var: vm_facts
+  delegate_to: localhost
+  vars:
+    ansible_connection: local
+  
 
 
 # - name: Trigger an on-demand backup 
