@@ -1,0 +1,25 @@
+---
+- name: block
+  block:
+  - name: Get VM Facts
+    azure.azcollection.azure_rm_virtualmachine_info:
+      resource_group: "{{ azure_resourcegroup_name }}"
+      name: "{{ inventory_hostname }}"
+    register: vm_facts
+
+  - name: debug
+    ansible.builtin.debug:
+      var: vm_facts
+  delegate_to: localhost
+  vars:
+    ansible_connection: local
+
+
+# - name: Trigger an on-demand backup 
+#   azure.azcollection.azure_rm_backupazurevm:
+#     resource_group: "{{ azure_resourcegroup_name }}"
+#     recovery_vault_name: "{{ azure_recovery_services_vault_name }}"
+#     resource_id: '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/testVM'
+#     backup_policy_id: "{{ backup_policy_id }}"
+#     recovery_point_expiry_time: '2025-02-09T06:00:00Z'
+#     state: 'backup'

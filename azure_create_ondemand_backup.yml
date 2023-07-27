@@ -1,0 +1,8 @@
+- name: Create an ondemand VM Backup
+  hosts: "{{ backup_hosts }}"
+  vars:
+    backup_hosts: "{{ update_hosts if update_hosts is defined else 'all' | default('all') }}"
+  gather_facts: no
+  roles:
+  - rsoliman.azure_demos.azure_create_ondemand_backup
+  

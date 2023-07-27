@@ -1,0 +1,8 @@
+---
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+
+azure_recovery_services_vault_name: "{{ azure_recovery_services_vault_name_choice | default('Ansible-Demo-recovery-services-vault') }}"
+
+backup_policy_id: "{{ backuppolicy.id | default('Ansible-Demo-backup-policy-id')}}"
+
+
