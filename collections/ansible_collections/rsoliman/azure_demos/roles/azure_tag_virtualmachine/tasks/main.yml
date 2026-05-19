@@ -4,6 +4,6 @@
   azure_rm_virtualmachine:
     resource_group: "{{ azure_resourcegroup_name }}"
     name: "{{ azure_virtualmachine_name }}"
-    tags:
-      "{{ azure_virtualmachine_tag_name }}": "{{ azure_virtualmachine_tag_value }}"
+    tags: "{{ {azure_virtualmachine_tag_name: azure_virtualmachine_tag_value} }}"
     append_tags: true
+    
