@@ -1,0 +1,6 @@
+---
+- name: Tag a VM in Azure
+  hosts: all
+  gather_facts: no
+  roles:
+  - rsoliman.azure_demos.azure_tag_virtualmachine

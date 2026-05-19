@@ -1,0 +1,6 @@
+---
+# vars file for azure-tag-virtualmachine
+azure_resourcegroup_name: "{{ azure_resourcegroup_name_choice | default('Ansible-Demo-rg') }}"
+azure_virtualmachine_name: "{{ azure_virtualmachine_name_choice }}"
+azure_virtualmachine_tag_name: "{{ azure_virtualmachine_tag_name_choice }}"
+azure_virtualmachine_tag_value: "{{ azure_virtualmachine_tag_value_choice }}"
